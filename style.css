@@ -1,0 +1,114 @@
+/* =========================================================
+   BOTÕES NEON — VERSÃO FINAL SEM CONFLITOS
+   ========================================================= */
+
+.project-btn, .social-btn, .email-btn {
+    position: relative;
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    border: 2px solid transparent;
+    cursor: pointer;
+    z-index: 1;
+    transition: transform .15s ease, box-shadow .15s ease;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Glow geral */
+.project-btn::before,
+.social-btn::before,
+.email-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: -1;
+    filter: blur(12px);
+    opacity: 0.9;
+}
+
+/* Hover padrão */
+.project-btn:hover, .social-btn:hover, .email-btn:hover {
+    transform: translateY(-5px);
+}
+
+/* =========================================================
+   🌿 WHATSAPP — Verde Neon
+   ========================================================= */
+.social-btn[href*="wa.me"] {
+    background: #25D366;
+    box-shadow: 0 0 15px #25D366;
+}
+.social-btn[href*="wa.me"]::before {
+    background: #25D366;
+}
+
+/* =========================================================
+   💗 E-MAIL — Rosa Neon
+   ========================================================= */
+.email-btn {
+    background: #ff006c;
+    box-shadow: 0 0 15px #ff006c;
+}
+.email-btn::before {
+    background: #ff006c;
+}
+
+/* =========================================================
+   ⚙ GITHUB — Cinza Neon Suave
+   ========================================================= */
+.social-btn[href*="github"] {
+    background: #444;
+    box-shadow: 0 0 12px #aaa;
+}
+.social-btn[href*="github"]::before {
+    background: #888;
+}
+
+/* =========================================================
+   🔵 LINKEDIN — Azul Neon
+   ========================================================= */
+.social-btn[href*="linkedin"] {
+    background: #0077b5;
+    box-shadow: 0 0 15px #0077b5;
+}
+.social-btn[href*="linkedin"]::before {
+    background: #0099ff;
+}
+
+/* =========================================================
+   🌈 INSTAGRAM — Preto + Neon Aqua
+   ========================================================= */
+.social-btn[href*="instagram"] {
+    background: #000;
+    box-shadow: 0 0 15px #00fff2;
+}
+.social-btn[href*="instagram"]::before {
+    background: #00fff2;
+}
+
+/* =========================================================
+   🟦 PROJETOS — Neon Verde Água
+   ========================================================= */
+.project-btn {
+    background: #00f3d0;
+    box-shadow: 0 0 18px #00f3d0;
+}
+.project-btn::before {
+    background: #00f3d0;
+}
+
+/* ==========================
+   MODO CLARO
+   ========================== */
+body.light .project-btn,
+body.light .social-btn,
+body.light .email-btn {
+    color: #000;
+    filter: none;
+}

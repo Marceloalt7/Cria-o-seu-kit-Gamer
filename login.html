@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Login Loja Premium</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+ font-family:'Poppins',sans-serif;
+ background:#0f0f0f;
+ color:#fff;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ min-height:100vh;
+ overflow:hidden;
+ transition:.3s;
+}
+
+/* BOTÃO VOLTAR */
+.backBtn{
+ position:fixed;
+ top:20px;
+ left:20px;
+ padding:8px 14px;
+ border:none;
+ border-radius:12px;
+ cursor:pointer;
+ background:#222;
+ color:#fff;
+ font-weight:600;
+ z-index:1000;
+ box-shadow:0 0 10px #000;
+}
+.backBtn:hover{opacity:.85}
+
+/* BOTÃO TEMA */
+.themeToggle{
+ position:fixed;
+ top:20px;
+ right:20px;
+ padding:8px 14px;
+ border:none;
+ border-radius:12px;
+ cursor:pointer;
+ background:#8e2de2;
+ color:#fff;
+ font-weight:600;
+ z-index:1000;
+ box-shadow:0 0 15px #8e2de2;
+}
+
+/* FUNDO */
+canvas{
+ position:fixed;
+ inset:0;
+ z-index:-1;
+ background:#0f0f0f;
+}
+
+/* LOGO */
+.logo{
+ text-align:center;
+ font-size:28px;
+ font-weight:700;
+ margin-bottom:15px;
+ color:#8e2de2;
+ animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+ from{ text-shadow:0 0 10px #8e2de2;}
+ to{ text-shadow:0 0 25px #8e2de2;}
+}
+
+/* CARD */
+.card{
+ backdrop-filter:blur(15px);
+ background:rgba(255,255,255,.06);
+ padding:30px;
+ border-radius:20px;
+ width:360px;
+ border:1px solid rgba(255,255,255,.15);
+ box-shadow:0 0 25px rgba(0,0,0,.4);
+ animation:fadeIn .7s ease;
+}
+@keyframes fadeIn{
+ from{opacity:0;transform:translateY(20px)}
+ to{opacity:1;transform:none}
+}
+
+.card input{
+ width:100%;
+ padding:12px;
+ margin:10px 0;
+ border-radius:12px;
+ border:none;
+ background:#111;
+ color:white;
+}
+
+.card button{
+ width:100%;
+ padding:12px;
+ background:#8e2de2;
+ color:white;
+ border:none;
+ border-radius:12px;
+ font-weight:600;
+ cursor:pointer;
+ margin-top:15px;
+ box-shadow:0 0 15px #8e2de2;
+}
+
+p{text-align:center;margin-top:10px}
+
+/* FORÇA SENHA */
+.strength{
+ height:8px;
+ background:#333;
+ border-radius:10px;
+ margin-bottom:10px;
+}
+.strength div{
+ height:100%;
+ width:0%;
+ border-radius:10px;
+ transition:.3s;
+}
+
+/* TOAST */
+.toast{
+ position:fixed;
+ top:20px;
+ right:-300px;
+ padding:15px 20px;
+ background:#222;
+ color:#fff;
+ border-left:4px solid #8e2de2;
+ border-radius:10px;
+ transition:.5s;
+ z-index:999;
+}
+.toast.show{right:20px}
+
+/* LOADING */
+.loadingScreen{
+ position:fixed;
+ inset:0;
+ display:none;
+ justify-content:center;
+ align-items:center;
+ background:#000d;
+ z-index:9999;
+}
+.spinner{
+ width:60px;
+ height:60px;
+ border:6px solid #8e2de2;
+ border-top-color:transparent;
+ border-radius:50%;
+ animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 🌞 TEMA CLARO */
+body.light{
+ background:#f4f4f4;
+ color:#111;
+}
+body.light canvas{background:#f4f4f4}
+body.light .card{background:rgba(255,255,255,.6)}
+body.light input{background:#ddd;color:#000}
+body.light .backBtn{background:#ddd;color:#000}
+</style>
+</head>
+
+<body>
+
+<!-- BOTÕES FIXOS -->
+<button class="backBtn" onclick="voltarSite()">⬅ Voltar ao site</button>
+<button class="themeToggle" id="themeBtn">🌙 Escuro</button>
+
+<canvas id="particles"></canvas>
+<div class="toast" id="toast"></div>
+
+<div class="loadingScreen" id="loading">
+ <div class="spinner"></div>
+</div>
+
+<!-- LOGIN -->
+<div class="card" id="loginCard">
+ <div class="logo">Loja Premium ✦</div>
+ <input id="username" placeholder="Usuário">
+ <input type="password" id="password" placeholder="Senha">
+ <label><input type="checkbox" id="autoLogin"> Login automático</label>
+ <button onclick="login()">Entrar</button>
+ <p id="errorLogin" style="color:#ff4b2b"></p>
+ <p><a onclick="showCadastro()" style="cursor:pointer">Cadastre-se</a></p>
+</div>
+
+<!-- CADASTRO -->
+<div class="card" id="cadastroCard" style="display:none">
+ <div class="logo">Criar Conta ✦</div>
+ <input id="newUser" placeholder="Usuário">
+ <input type="password" id="newPass" placeholder="Senha">
+ <input id="newEmail" placeholder="E-mail">
+ <input id="newCPF" placeholder="CPF (11 números)">
+ <input id="newPhone" placeholder="Telefone">
+ <input id="newAddress" placeholder="Endereço">
+
+ <div class="strength"><div id="strengthBar"></div></div>
+ <p id="senhaDica" style="font-size:13px"></p>
+
+ <button onclick="cadastrar()">Cadastrar</button>
+ <p id="erroCadastro" style="color:#ff4b2b"></p>
+ <p id="sucessoCadastro" style="color:#00ff7f"></p>
+ <p><a onclick="showLogin()" style="cursor:pointer">Voltar</a></p>
+</div>
+
+<script>
+/* VOLTAR AO SITE */
+function voltarSite(){
+ window.location.href = "index.html"; // altere se quiser
+}
+
+/* TEMA */
+const themeBtn=document.getElementById("themeBtn");
+if(localStorage.getItem("tema")==="light"){
+ document.body.classList.add("light");
+ themeBtn.textContent="🌞 Claro";
+}
+themeBtn.onclick=()=>{
+ document.body.classList.toggle("light");
+ const l=document.body.classList.contains("light");
+ themeBtn.textContent=l?"🌞 Claro":"🌙 Escuro";
+ localStorage.setItem("tema",l?"light":"dark");
+};
+
+/* PARTICLES */
+const canvas=document.getElementById("particles"),ctx=canvas.getContext("2d");
+canvas.width=innerWidth;canvas.height=innerHeight;
+let particles=[...Array(80)].map(()=>({
+ x:Math.random()*innerWidth,
+ y:Math.random()*innerHeight,
+ r:Math.random()*2+1,
+ dx:(Math.random()-.5)*.5,
+ dy:(Math.random()-.5)*.5
+}));
+(function animate(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ particles.forEach(p=>{
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+  ctx.fillStyle="#8e2de2";ctx.fill();
+  p.x+=p.dx;p.y+=p.dy;
+  if(p.x<0||p.x>innerWidth)p.dx*=-1;
+  if(p.y<0||p.y>innerHeight)p.dy*=-1;
+ });
+ requestAnimationFrame(animate);
+})();
+
+/* FORÇA SENHA */
+newPass.oninput=()=>{
+ let p=newPass.value,s=0;
+ if(p.length>=6)s++;
+ if(/[A-Z]/.test(p))s++;
+ if(/[0-9]/.test(p))s++;
+ if(/[^A-Za-z0-9]/.test(p))s++;
+ strengthBar.style.width=s*25+"%";
+ strengthBar.style.background=["red","orange","yellow","#00ff7f"][s-1]||"";
+ senhaDica.innerText=["Senha fraca","Senha média","Senha boa","Senha forte"][s-1]||"";
+};
+
+/* TOAST */
+const toastEl=document.getElementById("toast");
+function toast(m){
+ toastEl.innerText=m;
+ toastEl.classList.add("show");
+ setTimeout(()=>toastEl.classList.remove("show"),2500);
+}
+
+/* CADASTRO */
+function cadastrar(){
+ let u=newUser.value.trim(),
+ p=newPass.value.trim(),
+ e=newEmail.value.trim(),
+ c=newCPF.value.trim(),
+ t=newPhone.value.trim(),
+ a=newAddress.value.trim();
+
+ if(!u||!p||!e||!c||!t||!a)
+  return erroCadastro.innerText="Preencha todos os campos";
+
+ if(!/^\d{11}$/.test(c))
+  return erroCadastro.innerText="CPF inválido";
+
+ let users=JSON.parse(localStorage.getItem("users"))||[];
+ if(users.find(x=>x.user===u))
+  return erroCadastro.innerText="Usuário já existe";
+
+ users.push({user:u,pass:p,email:e,cpf:c,phone:t,address:a});
+ localStorage.setItem("users",JSON.stringify(users));
+
+ sucessoCadastro.innerText="Conta criada com sucesso!";
+ toast("Cadastro concluído ✔");
+ setTimeout(showLogin,1200);
+}
+
+/* LOGIN */
+function login(){
+ let u=username.value.trim(),p=password.value.trim();
+ let users=JSON.parse(localStorage.getItem("users"))||[];
+ let ok=users.find(x=>x.user===u&&x.pass===p);
+ if(!ok)return errorLogin.innerText="Usuário ou senha inválidos";
+ if(autoLogin.checked)localStorage.setItem("autologinUser",u);
+ toast("Login realizado ✔");
+}
+
+/* TELAS */
+function showCadastro(){loginCard.style.display="none";cadastroCard.style.display="block";}
+function showLogin(){cadastroCard.style.display="none";loginCard.style.display="block";}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Loja Virtual Gamer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+ --bg:#0f0f0f;
+ --card:#141414;
+ --accent1:#00fff0;
+ --accent2:#00bcd4;
+ --green:#00ff7f;
+ --vip:#ffd700;
+ --muted:#1a1a1a;
+ --text:#ffffff;
+}
+
+/* 🌞 MODO CLARO */
+body.light{
+ --bg:#f4f4f4;
+ --card:#ffffff;
+ --accent1:#0066ff;
+ --accent2:#00aaff;
+ --green:#00a86b;
+ --vip:#ffb700;
+ --muted:#e5e5e5;
+ --text:#000000;
+}
+
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:'Poppins',sans-serif;
+ background:var(--bg);
+ color:var(--text);
+ transition:.3s;
+}
+
+header{
+ background:linear-gradient(135deg,var(--accent1),var(--accent2));
+ padding:30px;
+ text-align:center;
+ color:var(--bg);
+ font-size:32px;
+ font-weight:700;
+ border-radius:0 0 25px 25px;
+ position:relative;
+}
+
+/* 🌗 BOTÃO TEMA */
+#themeToggle{
+ position:absolute;
+ top:20px;
+ right:20px;
+ padding:8px 14px;
+ border:none;
+ border-radius:10px;
+ cursor:pointer;
+ font-weight:700;
+ background:var(--bg);
+ color:var(--text);
+}
+
+a.voltar{
+ display:block;
+ width:220px;
+ margin:18px auto;
+ padding:10px;
+ background:var(--accent1);
+ text-align:center;
+ color:var(--bg);
+ border-radius:12px;
+ text-decoration:none;
+ font-weight:600;
+ transition:.25s;
+}
+
+a.voltar:hover{transform:translateY(-3px)}
+
+.hero{
+ width:100%;
+ height:220px;
+ background:url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80') center/cover;
+ border-radius:0 0 25px 25px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ margin:18px 0;
+}
+
+.hero h2{
+ background:rgba(0,0,0,.65);
+ padding:18px 28px;
+ color:var(--accent1);
+ border-radius:12px;
+ font-size:28px;
+}
+
+.saldoBox{
+ width:90%;
+ max-width:1200px;
+ margin:auto;
+ background:var(--muted);
+ padding:18px;
+ border-radius:12px;
+ text-align:center;
+}
+
+.saldoValor{
+ font-size:22px;
+ font-weight:700;
+ color:var(--green);
+}
+
+.btn-saldo,.btn-vip{
+ border:none;
+ padding:10px 14px;
+ border-radius:10px;
+ font-weight:700;
+ cursor:pointer;
+ margin:5px;
+}
+
+.btn-saldo{background:var(--accent1); color:var(--bg);}
+.btn-vip{background:var(--vip); color:#000;}
+
+.container{
+ width:90%;
+ max-width:1200px;
+ margin:28px auto;
+ display:flex;
+ gap:28px;
+ flex-wrap:wrap;
+}
+
+.produtos{
+ flex:3;
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+ gap:24px;
+}
+
+.produto{
+ background:var(--card);
+ border-radius:16px;
+ padding:14px;
+ text-align:center;
+ position:relative;
+ transition:.3s;
+}
+
+.produto:hover{transform:translateY(-6px)}
+
+.produto img{
+ width:100%;
+ height:150px;
+ object-fit:cover;
+ border-radius:12px;
+}
+
+.vipTag{
+ position:absolute;
+ top:12px;
+ right:12px;
+ background:var(--vip);
+ color:#000;
+ padding:6px 10px;
+ border-radius:12px;
+ font-weight:700;
+}
+
+.preco{color:var(--green);font-weight:700}
+
+.btn-add{
+ margin-top:10px;
+ padding:10px;
+ width:100%;
+ background:var(--green);
+ border:none;
+ border-radius:10px;
+ font-weight:700;
+ cursor:pointer;
+}
+
+.side{flex:1;min-width:260px}
+
+.carrinho{
+ background:var(--muted);
+ padding:18px;
+ border-radius:12px;
+}
+
+ul{padding:0}
+
+li{
+ list-style:none;
+ background:#00000030;
+ padding:10px;
+ margin-bottom:8px;
+ border-radius:8px;
+ display:flex;
+ justify-content:space-between;
+}
+
+.item-remove{
+ background:none;
+ border:none;
+ color:#ff6b6b;
+ font-weight:700;
+ cursor:pointer;
+}
+
+.personalizar{
+ width:90%;
+ max-width:1200px;
+ margin:28px auto;
+ background:var(--muted);
+ padding:18px;
+ border-radius:12px;
+ text-align:center;
+}
+
+#avisoVIP{
+ margin-top:10px;
+ text-align:center;
+ font-weight:700;
+ padding:10px;
+ border-radius:8px;
+ display:block;
+}
+
+@media(max-width:900px){
+ .container{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ 🛒 M GAMER
+ <button id="themeToggle">🌙 Escuro</button>
+</header>
+
+<a href="#" class="voltar" onclick="history.back()">⬅ Voltar</a>
+
+<div class="hero">
+ <h2>Ofertas Especiais Hoje!</h2>
+</div>
+
+<!-- SALDO -->
+<div class="saldoBox">
+ <h2>💳 Seu Saldo</h2>
+ <div class="saldoValor" id="saldoValor">R$ 0,00</div>
+ <button class="btn-saldo" onclick="addSaldo()">Adicionar Saldo</button>
+ <button class="btn-saldo" onclick="removerSaldo()">Remover Saldo</button>
+ <button class="btn-vip" onclick="ativarVIP()">Ativar VIP (R$50)</button>
+ <button class="btn-vip" onclick="cancelarVIP()">Cancelar VIP</button>
+ <div id="vipStatus">VIP: ❌</div>
+ <div id="avisoVIP"></div>
+</div>
+
+<div class="container">
+ <div class="produtos" id="produtosContainer"></div>
+
+ <div class="side">
+  <div class="carrinho">
+   <h2>Carrinho</h2>
+   <ul id="lista"></ul>
+   <div id="total">Total: R$ 0,00</div>
+   <button class="btn-add" onclick="comprar()">Comprar</button>
+   <button class="btn-add" onclick="limparCarrinho()">Limpar</button>
+  </div>
+ </div>
+</div>
+
+<!-- PERSONALIZAR -->
+<div class="personalizar">
+ <h3>🎨 Personalizar Produto</h3>
+ <select id="tipoProduto">
+  <option>Teclado Gamer</option>
+  <option>Mouse Gamer</option>
+  <option>Headset Gamer</option>
+  <option>Cadeira Gamer</option>
+  <option>Mesa Gamer</option>
+ </select>
+ <select id="corProduto">
+  <option>Preto</option>
+  <option>RGB</option>
+  <option>Branco</option>
+  <option>Vermelho</option>
+ </select>
+ <input type="number" id="precoCustom" placeholder="Preço (R$)">
+ <button class="btn-add" onclick="addCustom()">Adicionar Personalizado</button>
+</div>
+
+<script>
+/* 🌗 TEMA */
+const toggle = document.getElementById("themeToggle");
+if(localStorage.getItem("theme")==="light"){
+ document.body.classList.add("light");
+ toggle.textContent="🌞 Claro";
+}
+toggle.onclick=()=>{
+ document.body.classList.toggle("light");
+ const l=document.body.classList.contains("light");
+ toggle.textContent=l?"🌞 Claro":"🌙 Escuro";
+ localStorage.setItem("theme",l?"light":"dark");
+};
+
+/* PRODUTOS */
+const produtos=[
+ {nome:"Teclado Mecânico", preco:350, vip:false, img:"https://a-static.mlcdn.com.br/800x560/teclado-gamer-backlight-led-rgb-usb-teclas-multimidia-abnt2-semi-mecanico-shaolong/paizaostore/p22010/f94a5d04a47916380ba9f222159d7071.jpeg"},
+ {nome:"Mouse Gamer", preco:200, vip:false, img:"https://i5.walmartimages.com/asr/fe47a4ab-5ecc-414f-ae49-6c7a2669e11b_1.42489ef0e331c97f5252d7fc211303a1.jpeg"},
+ {nome:"Headset Gamer", preco:400, vip:true, img:"https://m.media-amazon.com/images/I/71qESRvv8iS.jpg"},
+ {nome:"Mousepad RGB", preco:120, vip:false, img:"https://i.etsystatic.com/27320757/r/il/15e172/3348213896/il_2000xN.3348213896_jvtu.jpg"},
+ {nome:"Teclado RGB", preco:450, vip:true, img:"https://http2.mlstatic.com/D_NQ_NP_791087-MLA45374756742_032021-F.jpg"},
+ {nome:"Mouse Óptico", preco:180, vip:false, img:"https://th.bing.com/th/id/R.1843255b52aef85f6ccf1fd3807228bd?rik=S8XQ2SnYPsElAQ&pid=ImgRaw&r=0"},
+ {nome:"Headset Sem Fio", preco:500, vip:true, img:"https://resource.logitechg.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png?v=1"},
+ {nome:"Mousepad Speed", preco:150, vip:false, img:"https://m.media-amazon.com/images/I/71Qlnn9kBgL._AC_SX679_.jpg"},
+ {nome:"Teclado Compacto", preco:300, vip:false, img:"https://tse3.mm.bing.net/th/id/OIP.9tMgCoYFOoo2wNpWl2E0IAHaHa?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3"},
+ {nome:"Mouse Gamer RGB", preco:220, vip:true, img:"https://tse2.mm.bing.net/th/id/OIP.J_uZV6G-RtGKvBMpwLhY9QHaHa?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3"}
+];
+
+function renderProdutos(){
+ const c=document.getElementById("produtosContainer");
+ c.innerHTML="";
+ produtos.forEach(p=>{
+  c.innerHTML+=`
+   <div class="produto">
+    ${p.vip?'<span class="vipTag">VIP</span>':''}
+    <img src="${p.img}">
+    <h3>${p.nome}</h3>
+    <p class="preco">R$ ${p.preco.toFixed(2)}</p>
+    <button class="btn-add" onclick="add('${p.nome}|${p.preco}|${p.vip}')">Adicionar</button>
+   </div>`;
+ });
+}
+
+function getSaldo(){return parseFloat(localStorage.getItem("saldo"))||0;}
+function atualizarSaldo(){
+ document.getElementById("saldoValor").innerText="R$ "+getSaldo().toFixed(2);
+ document.getElementById("vipStatus").innerText=localStorage.getItem("vip")==="true"?"VIP: ✔":"VIP: ❌";
+}
+
+function addSaldo(){
+ const v=parseFloat(prompt("Valor?"));
+ if(v>0){localStorage.setItem("saldo",getSaldo()+v);atualizarSaldo();}
+}
+
+function removerSaldo(){
+ const v=parseFloat(prompt("Valor?"));
+ if(v>0&&v<=getSaldo()){localStorage.setItem("saldo",getSaldo()-v);atualizarSaldo();}
+}
+
+function ativarVIP(){
+ if(getSaldo()<50)return alert("Saldo insuficiente");
+ localStorage.setItem("vip","true");
+ localStorage.setItem("saldo",getSaldo()-50);
+ atualizarSaldo();
+}
+
+function cancelarVIP(){
+ localStorage.setItem("vip","false");
+ atualizarSaldo();
+}
+
+function atualizarLista(){
+ const lista=document.getElementById("lista");
+ const total=document.getElementById("total");
+ let carrinho=JSON.parse(localStorage.getItem("carrinho"))||[];
+ lista.innerHTML="";
+ let soma=0;
+ carrinho.forEach((i,idx)=>{
+  const [n,p]=i.split("|");
+  soma+=+p;
+  lista.innerHTML+=`<li>${n} <button onclick="removerItem(${idx})">✖</button></li>`;
+ });
+ total.innerText="Total: R$ "+soma.toFixed(2);
+}
+
+function add(d){
+ let c=JSON.parse(localStorage.getItem("carrinho"))||[];
+ c.push(d);
+ localStorage.setItem("carrinho",JSON.stringify(c));
+ atualizarLista();
+}
+
+function removerItem(i){
+ let c=JSON.parse(localStorage.getItem("carrinho"))||[];
+ c.splice(i,1);
+ localStorage.setItem("carrinho",JSON.stringify(c));
+ atualizarLista();
+}
+
+function limparCarrinho(){
+ localStorage.removeItem("carrinho");
+ atualizarLista();
+}
+
+function comprar(){
+ alert("Compra concluída!");
+ limparCarrinho();
+}
+
+function addCustom(){
+ const t=document.getElementById("tipoProduto").value;
+ const c=document.getElementById("corProduto").value;
+ const p=parseFloat(document.getElementById("precoCustom").value);
+ if(p>0)add(`${t} (${c})|${p}|false`);
+}
+
+window.onload=()=>{
+ renderProdutos();
+ atualizarSaldo();
+ atualizarLista();
+};
+</script>
+
+</body>
+</html>
