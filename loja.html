@@ -116,6 +116,7 @@ a.voltar:hover{transform:translateY(-3px)}
  color:var(--green);
 }
 
+/* BOTÕES */
 .btn-saldo,.btn-vip{
  border:none;
  padding:10px 14px;
@@ -127,6 +128,26 @@ a.voltar:hover{transform:translateY(-3px)}
 
 .btn-saldo{background:var(--accent1); color:var(--bg);}
 .btn-vip{background:var(--vip); color:#000;}
+
+/* ANIMAÇÃO VIP */
+@keyframes vipGlow{
+ 0%{box-shadow:0 0 5px #ffd700;}
+ 50%{box-shadow:0 0 25px #ffd700,0 0 50px #ffea70;}
+ 100%{box-shadow:0 0 5px #ffd700;}
+}
+.btn-vip.glow{
+ animation:vipGlow 2s infinite;
+}
+
+/* ANIMAÇÃO AVISO VIP */
+@keyframes vipAviso{
+ 0%{background-color:rgba(255,215,0,0.2);}
+ 50%{background-color:rgba(255,215,0,0.8);}
+ 100%{background-color:rgba(255,215,0,0.2);}
+}
+#avisoVIP.show{
+ animation:vipAviso 1s infinite;
+}
 
 .container{
  width:90%;
@@ -258,8 +279,8 @@ li{
  <div class="saldoValor" id="saldoValor">R$ 0,00</div>
  <button class="btn-saldo" onclick="addSaldo()">Adicionar Saldo</button>
  <button class="btn-saldo" onclick="removerSaldo()">Remover Saldo</button>
- <button class="btn-vip" onclick="ativarVIP()">Ativar VIP (R$50)</button>
- <button class="btn-vip" onclick="cancelarVIP()">Cancelar VIP</button>
+ <button class="btn-vip glow" onclick="ativarVIP()">Ativar VIP (R$50)</button>
+ <button class="btn-vip glow" onclick="cancelarVIP()">Cancelar VIP</button>
  <div id="vipStatus">VIP: ❌</div>
  <div id="avisoVIP"></div>
 </div>
@@ -344,7 +365,23 @@ function renderProdutos(){
 function getSaldo(){return parseFloat(localStorage.getItem("saldo"))||0;}
 function atualizarSaldo(){
  document.getElementById("saldoValor").innerText="R$ "+getSaldo().toFixed(2);
- document.getElementById("vipStatus").innerText=localStorage.getItem("vip")==="true"?"VIP: ✔":"VIP: ❌";
+ const vip = localStorage.getItem("vip")==="true";
+ document.getElementById("vipStatus").innerText = vip?"VIP: ✔":"VIP: ❌";
+
+ // animação VIP
+ document.querySelectorAll(".btn-vip").forEach(btn=>{
+   btn.classList.toggle("glow", !vip);
+ });
+
+ // animação aviso VIP
+ const aviso = document.getElementById("avisoVIP");
+ if(vip){
+   aviso.innerText="🎉 VIP Ativo!";
+   aviso.classList.add("show");
+ }else{
+   aviso.innerText="VIP Inativo";
+   aviso.classList.remove("show");
+ }
 }
 
 function addSaldo(){
@@ -352,9 +389,10 @@ function addSaldo(){
  if(v>0){localStorage.setItem("saldo",getSaldo()+v);atualizarSaldo();}
 }
 
+// ZERA SALDO de uma vez
 function removerSaldo(){
- const v=parseFloat(prompt("Valor?"));
- if(v>0&&v<=getSaldo()){localStorage.setItem("saldo",getSaldo()-v);atualizarSaldo();}
+ localStorage.setItem("saldo", 0);
+ atualizarSaldo();
 }
 
 function ativarVIP(){
@@ -362,6 +400,7 @@ function ativarVIP(){
  localStorage.setItem("vip","true");
  localStorage.setItem("saldo",getSaldo()-50);
  atualizarSaldo();
+ alert("VIP ativado com sucesso!");
 }
 
 function cancelarVIP(){

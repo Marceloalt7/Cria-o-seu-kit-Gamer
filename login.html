@@ -19,8 +19,6 @@ body{
  overflow:hidden;
  transition:.3s;
 }
-
-/* BOTÃO VOLTAR */
 .backBtn{
  position:fixed;
  top:20px;
@@ -33,15 +31,11 @@ body{
  color:#fff;
  font-weight:600;
  z-index:1000;
- box-shadow:0 0 10px #000;
 }
-.backBtn:hover{opacity:.85}
-
-/* BOTÃO TEMA */
 .themeToggle{
  position:fixed;
- top:20px;
- right:20px;
+ bottom:20px;
+ left:20px;
  padding:8px 14px;
  border:none;
  border-radius:12px;
@@ -50,47 +44,17 @@ body{
  color:#fff;
  font-weight:600;
  z-index:1000;
- box-shadow:0 0 15px #8e2de2;
 }
-
-/* FUNDO */
-canvas{
- position:fixed;
- inset:0;
- z-index:-1;
- background:#0f0f0f;
-}
-
-/* LOGO */
-.logo{
- text-align:center;
- font-size:28px;
- font-weight:700;
- margin-bottom:15px;
- color:#8e2de2;
- animation:glow 2s infinite alternate;
-}
-@keyframes glow{
- from{ text-shadow:0 0 10px #8e2de2;}
- to{ text-shadow:0 0 25px #8e2de2;}
-}
-
-/* CARD */
+canvas{position:fixed;inset:0;z-index:-1}
+.logo{text-align:center;font-size:28px;font-weight:700;margin-bottom:15px;color:#8e2de2}
 .card{
  backdrop-filter:blur(15px);
  background:rgba(255,255,255,.06);
  padding:30px;
  border-radius:20px;
  width:360px;
- border:1px solid rgba(255,255,255,.15);
- box-shadow:0 0 25px rgba(0,0,0,.4);
- animation:fadeIn .7s ease;
+ transition:.3s;
 }
-@keyframes fadeIn{
- from{opacity:0;transform:translateY(20px)}
- to{opacity:1;transform:none}
-}
-
 .card input{
  width:100%;
  padding:12px;
@@ -100,7 +64,6 @@ canvas{
  background:#111;
  color:white;
 }
-
 .card button{
  width:100%;
  padding:12px;
@@ -111,26 +74,10 @@ canvas{
  font-weight:600;
  cursor:pointer;
  margin-top:15px;
- box-shadow:0 0 15px #8e2de2;
 }
-
 p{text-align:center;margin-top:10px}
-
-/* FORÇA SENHA */
-.strength{
- height:8px;
- background:#333;
- border-radius:10px;
- margin-bottom:10px;
-}
-.strength div{
- height:100%;
- width:0%;
- border-radius:10px;
- transition:.3s;
-}
-
-/* TOAST */
+.strength{height:8px;background:#333;border-radius:10px}
+.strength div{height:100%;width:0%;border-radius:10px}
 .toast{
  position:fixed;
  top:20px;
@@ -141,54 +88,37 @@ p{text-align:center;margin-top:10px}
  border-left:4px solid #8e2de2;
  border-radius:10px;
  transition:.5s;
- z-index:999;
 }
 .toast.show{right:20px}
 
-/* LOADING */
-.loadingScreen{
- position:fixed;
- inset:0;
- display:none;
- justify-content:center;
- align-items:center;
- background:#000d;
- z-index:9999;
-}
-.spinner{
- width:60px;
- height:60px;
- border:6px solid #8e2de2;
- border-top-color:transparent;
- border-radius:50%;
- animation:spin .7s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* 🌞 TEMA CLARO */
+/* Modo Claro */
 body.light{
- background:#f4f4f4;
+ background:#f0f0f0;
  color:#111;
 }
-body.light canvas{background:#f4f4f4}
-body.light .card{background:rgba(255,255,255,.6)}
-body.light input{background:#ddd;color:#000}
-body.light .backBtn{background:#ddd;color:#000}
+body.light .card{
+ background:rgba(255,255,255,.9);
+ color:#111;
+}
+body.light .card input{
+ background:#eee;
+ color:#111;
+}
+body.light .toast{
+ background:#fff;
+ color:#111;
+ border-left:4px solid #8e2de2;
+}
 </style>
 </head>
 
 <body>
 
-<!-- BOTÕES FIXOS -->
-<button class="backBtn" onclick="voltarSite()">⬅ Voltar ao site</button>
-<button class="themeToggle" id="themeBtn">🌙 Escuro</button>
+<button class="backBtn" onclick="voltarSite()">⬅ Voltar</button>
+<button class="themeToggle" onclick="toggleTheme()">🌙 / ☀️</button>
 
 <canvas id="particles"></canvas>
 <div class="toast" id="toast"></div>
-
-<div class="loadingScreen" id="loading">
- <div class="spinner"></div>
-</div>
 
 <!-- LOGIN -->
 <div class="card" id="loginCard">
@@ -207,42 +137,25 @@ body.light .backBtn{background:#ddd;color:#000}
  <input id="newUser" placeholder="Usuário">
  <input type="password" id="newPass" placeholder="Senha">
  <input id="newEmail" placeholder="E-mail">
- <input id="newCPF" placeholder="CPF (11 números)">
+ <input id="newCPF" placeholder="CPF">
  <input id="newPhone" placeholder="Telefone">
  <input id="newAddress" placeholder="Endereço">
-
  <div class="strength"><div id="strengthBar"></div></div>
- <p id="senhaDica" style="font-size:13px"></p>
-
+ <p id="senhaDica"></p>
  <button onclick="cadastrar()">Cadastrar</button>
- <p id="erroCadastro" style="color:#ff4b2b"></p>
- <p id="sucessoCadastro" style="color:#00ff7f"></p>
+ <p id="erroCadastro" style="color:red"></p>
  <p><a onclick="showLogin()" style="cursor:pointer">Voltar</a></p>
 </div>
 
 <script>
-/* VOLTAR AO SITE */
 function voltarSite(){
- window.location.href = "index.html"; // altere se quiser
+ window.location.href="index.html";
 }
-
-/* TEMA */
-const themeBtn=document.getElementById("themeBtn");
-if(localStorage.getItem("tema")==="light"){
- document.body.classList.add("light");
- themeBtn.textContent="🌞 Claro";
-}
-themeBtn.onclick=()=>{
- document.body.classList.toggle("light");
- const l=document.body.classList.contains("light");
- themeBtn.textContent=l?"🌞 Claro":"🌙 Escuro";
- localStorage.setItem("tema",l?"light":"dark");
-};
 
 /* PARTICLES */
 const canvas=document.getElementById("particles"),ctx=canvas.getContext("2d");
 canvas.width=innerWidth;canvas.height=innerHeight;
-let particles=[...Array(80)].map(()=>({
+let particles=[...Array(60)].map(()=>({
  x:Math.random()*innerWidth,
  y:Math.random()*innerHeight,
  r:Math.random()*2+1,
@@ -254,16 +167,15 @@ let particles=[...Array(80)].map(()=>({
  particles.forEach(p=>{
   ctx.beginPath();
   ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-  ctx.fillStyle="#8e2de2";ctx.fill();
+  ctx.fillStyle="#8e2de2";
+  ctx.fill();
   p.x+=p.dx;p.y+=p.dy;
-  if(p.x<0||p.x>innerWidth)p.dx*=-1;
-  if(p.y<0||p.y>innerHeight)p.dy*=-1;
  });
  requestAnimationFrame(animate);
 })();
 
 /* FORÇA SENHA */
-newPass.oninput=()=>{
+document.getElementById("newPass").addEventListener("input",()=>{
  let p=newPass.value,s=0;
  if(p.length>=6)s++;
  if(/[A-Z]/.test(p))s++;
@@ -271,57 +183,87 @@ newPass.oninput=()=>{
  if(/[^A-Za-z0-9]/.test(p))s++;
  strengthBar.style.width=s*25+"%";
  strengthBar.style.background=["red","orange","yellow","#00ff7f"][s-1]||"";
- senhaDica.innerText=["Senha fraca","Senha média","Senha boa","Senha forte"][s-1]||"";
-};
+});
 
 /* TOAST */
 const toastEl=document.getElementById("toast");
 function toast(m){
  toastEl.innerText=m;
  toastEl.classList.add("show");
- setTimeout(()=>toastEl.classList.remove("show"),2500);
+ setTimeout(()=>toastEl.classList.remove("show"),2000);
 }
 
 /* CADASTRO */
 function cadastrar(){
- let u=newUser.value.trim(),
- p=newPass.value.trim(),
- e=newEmail.value.trim(),
- c=newCPF.value.trim(),
- t=newPhone.value.trim(),
- a=newAddress.value.trim();
+ let u = newUser.value.trim();
+ let p = newPass.value.trim();
 
- if(!u||!p||!e||!c||!t||!a)
-  return erroCadastro.innerText="Preencha todos os campos";
+ if(!u || !p){
+  erroCadastro.innerText="Preencha usuário e senha";
+  return;
+ }
 
- if(!/^\d{11}$/.test(c))
-  return erroCadastro.innerText="CPF inválido";
+ let users = JSON.parse(localStorage.getItem("users")) || [];
 
- let users=JSON.parse(localStorage.getItem("users"))||[];
- if(users.find(x=>x.user===u))
-  return erroCadastro.innerText="Usuário já existe";
+ if(users.find(x=>x.user===u)){
+  erroCadastro.innerText="Usuário já existe";
+  return;
+ }
 
- users.push({user:u,pass:p,email:e,cpf:c,phone:t,address:a});
+ users.push({user:u,pass:p});
  localStorage.setItem("users",JSON.stringify(users));
 
- sucessoCadastro.innerText="Conta criada com sucesso!";
- toast("Cadastro concluído ✔");
- setTimeout(showLogin,1200);
+ erroCadastro.innerText="";
+ toast("Cadastro feito ✔");
+
+ showLogin();
+ username.value=u;
+ password.value=p;
 }
 
-/* LOGIN */
+/* LOGIN → LOJA */
 function login(){
- let u=username.value.trim(),p=password.value.trim();
+ let u=username.value.trim();
+ let p=password.value.trim();
  let users=JSON.parse(localStorage.getItem("users"))||[];
  let ok=users.find(x=>x.user===u&&x.pass===p);
- if(!ok)return errorLogin.innerText="Usuário ou senha inválidos";
- if(autoLogin.checked)localStorage.setItem("autologinUser",u);
- toast("Login realizado ✔");
+
+ if(!ok){
+  errorLogin.innerText="Usuário ou senha inválidos";
+  return;
+ }
+
+ if(autoLogin.checked){
+  localStorage.setItem("autologinUser",u);
+ }
+
+ window.location.href="loja.html";
+}
+
+/* AUTOLOGIN */
+if(localStorage.getItem("autologinUser")){
+ window.location.href="loja.html";
 }
 
 /* TELAS */
-function showCadastro(){loginCard.style.display="none";cadastroCard.style.display="block";}
-function showLogin(){cadastroCard.style.display="none";loginCard.style.display="block";}
+function showCadastro(){
+ loginCard.style.display="none";
+ cadastroCard.style.display="block";
+}
+function showLogin(){
+ cadastroCard.style.display="none";
+ loginCard.style.display="block";
+}
+
+/* MODO CLARO/ESCURO */
+const currentTheme = localStorage.getItem("theme");
+if(currentTheme === "light") document.body.classList.add("light");
+
+function toggleTheme(){
+ document.body.classList.toggle("light");
+ let theme = document.body.classList.contains("light") ? "light" : "dark";
+ localStorage.setItem("theme", theme);
+}
 </script>
 
 </body>
