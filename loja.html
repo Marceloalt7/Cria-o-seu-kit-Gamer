@@ -18,7 +18,6 @@
  --text:#ffffff;
 }
 
-/* 🌞 MODO CLARO */
 body.light{
  --bg:#f4f4f4;
  --card:#ffffff;
@@ -51,7 +50,6 @@ header{
  position:relative;
 }
 
-/* 🌗 BOTÃO TEMA */
 #themeToggle{
  position:absolute;
  top:20px;
@@ -65,27 +63,10 @@ header{
  color:var(--text);
 }
 
-a.voltar{
- display:block;
- width:220px;
- margin:18px auto;
- padding:10px;
- background:var(--accent1);
- text-align:center;
- color:var(--bg);
- border-radius:12px;
- text-decoration:none;
- font-weight:600;
- transition:.25s;
-}
-
-a.voltar:hover{transform:translateY(-3px)}
-
 .hero{
  width:100%;
  height:220px;
  background:url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80') center/cover;
- border-radius:0 0 25px 25px;
  display:flex;
  align-items:center;
  justify-content:center;
@@ -100,14 +81,23 @@ a.voltar:hover{transform:translateY(-3px)}
  font-size:28px;
 }
 
-.saldoBox{
+/* 🔥 SALDO + CARRINHO */
+.topArea{
  width:90%;
  max-width:1200px;
- margin:auto;
+ margin:20px auto;
+ display:flex;
+ gap:24px;
+ flex-wrap:wrap;
+}
+
+.saldoBox,.carrinho{
+ flex:1;
  background:var(--muted);
  padding:18px;
  border-radius:12px;
  text-align:center;
+ min-width:280px;
 }
 
 .saldoValor{
@@ -116,7 +106,6 @@ a.voltar:hover{transform:translateY(-3px)}
  color:var(--green);
 }
 
-/* BOTÕES */
 .btn-saldo,.btn-vip{
  border:none;
  padding:10px 14px;
@@ -129,37 +118,49 @@ a.voltar:hover{transform:translateY(-3px)}
 .btn-saldo{background:var(--accent1); color:var(--bg);}
 .btn-vip{background:var(--vip); color:#000;}
 
-/* ANIMAÇÃO VIP */
 @keyframes vipGlow{
  0%{box-shadow:0 0 5px #ffd700;}
  50%{box-shadow:0 0 25px #ffd700,0 0 50px #ffea70;}
  100%{box-shadow:0 0 5px #ffd700;}
 }
-.btn-vip.glow{
- animation:vipGlow 2s infinite;
+.btn-vip.glow{animation:vipGlow 2s infinite;}
+
+@keyframes vipAviso{
+ 0%{background-color:rgba(255,215,0,.2);}
+ 50%{background-color:rgba(255,215,0,.8);}
+ 100%{background-color:rgba(255,215,0,.2);}
+}
+#avisoVIP.show{animation:vipAviso 1s infinite;}
+
+ul{padding:0}
+li{
+ list-style:none;
+ background:#00000030;
+ padding:10px;
+ margin-bottom:8px;
+ border-radius:8px;
+ display:flex;
+ justify-content:space-between;
 }
 
-/* ANIMAÇÃO AVISO VIP */
-@keyframes vipAviso{
- 0%{background-color:rgba(255,215,0,0.2);}
- 50%{background-color:rgba(255,215,0,0.8);}
- 100%{background-color:rgba(255,215,0,0.2);}
-}
-#avisoVIP.show{
- animation:vipAviso 1s infinite;
+.btn-add{
+ margin-top:10px;
+ padding:10px;
+ width:100%;
+ background:var(--green);
+ border:none;
+ border-radius:10px;
+ font-weight:700;
+ cursor:pointer;
 }
 
 .container{
  width:90%;
  max-width:1200px;
  margin:28px auto;
- display:flex;
- gap:28px;
- flex-wrap:wrap;
 }
 
 .produtos{
- flex:3;
  display:grid;
  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
  gap:24px;
@@ -196,45 +197,6 @@ a.voltar:hover{transform:translateY(-3px)}
 
 .preco{color:var(--green);font-weight:700}
 
-.btn-add{
- margin-top:10px;
- padding:10px;
- width:100%;
- background:var(--green);
- border:none;
- border-radius:10px;
- font-weight:700;
- cursor:pointer;
-}
-
-.side{flex:1;min-width:260px}
-
-.carrinho{
- background:var(--muted);
- padding:18px;
- border-radius:12px;
-}
-
-ul{padding:0}
-
-li{
- list-style:none;
- background:#00000030;
- padding:10px;
- margin-bottom:8px;
- border-radius:8px;
- display:flex;
- justify-content:space-between;
-}
-
-.item-remove{
- background:none;
- border:none;
- color:#ff6b6b;
- font-weight:700;
- cursor:pointer;
-}
-
 .personalizar{
  width:90%;
  max-width:1200px;
@@ -244,19 +206,6 @@ li{
  border-radius:12px;
  text-align:center;
 }
-
-#avisoVIP{
- margin-top:10px;
- text-align:center;
- font-weight:700;
- padding:10px;
- border-radius:8px;
- display:block;
-}
-
-@media(max-width:900px){
- .container{flex-direction:column}
-}
 </style>
 </head>
 
@@ -265,65 +214,42 @@ li{
 <header>
  🛒 M GAMER
  <button id="themeToggle">🌙 Escuro</button>
-
-
 </header>
-
-<a href="#" class="voltar" onclick="history.back()">⬅ Voltar</a>
 
 <div class="hero">
  <h2>Ofertas Especiais Hoje!</h2>
 </div>
 
-<!-- SALDO -->
-<div class="saldoBox">
- <h2>💳 Seu Saldo</h2>
- <div class="saldoValor" id="saldoValor">R$ 0,00</div>
- <button class="btn-saldo" onclick="addSaldo()">Adicionar Saldo</button>
- <button class="btn-saldo" onclick="removerSaldo()">Remover Saldo</button>
- <button class="btn-vip glow" onclick="ativarVIP()">Ativar VIP (R$50)</button>
- <button class="btn-vip glow" onclick="cancelarVIP()">Cancelar VIP</button>
- <div id="vipStatus">VIP: ❌</div>
- <div id="avisoVIP"></div>
+<!-- 🔥 SALDO + CARRINHO -->
+<div class="topArea">
+
+ <div class="saldoBox">
+  <h2>💳 Seu Saldo</h2>
+  <div class="saldoValor" id="saldoValor">R$ 0,00</div>
+  <button class="btn-saldo" onclick="addSaldo()">Adicionar Saldo</button>
+  <button class="btn-saldo" onclick="removerSaldo()">Remover Saldo</button>
+  <button class="btn-vip glow" onclick="ativarVIP()">Ativar VIP (R$50)</button>
+  <button class="btn-vip" onclick="cancelarVIP()">Cancelar VIP</button>
+  <div id="vipStatus">VIP: ❌</div>
+  <div id="avisoVIP"></div>
+ </div>
+
+ <div class="carrinho">
+  <h2>🛒 Carrinho</h2>
+  <ul id="lista"></ul>
+  <div id="total">Total: R$ 0,00</div>
+  <button class="btn-add" onclick="comprar()">Comprar</button>
+  <button class="btn-add" onclick="limparCarrinho()">Limpar</button>
+ </div>
+
 </div>
 
 <div class="container">
  <div class="produtos" id="produtosContainer"></div>
-
- <div class="side">
-  <div class="carrinho">
-   <h2>Carrinho</h2>
-   <ul id="lista"></ul>
-   <div id="total">Total: R$ 0,00</div>
-   <button class="btn-add" onclick="comprar()">Comprar</button>
-   <button class="btn-add" onclick="limparCarrinho()">Limpar</button>
-  </div>
- </div>
-</div>
-
-<!-- PERSONALIZAR -->
-<div class="personalizar">
- <h3>🎨 Personalizar Produto</h3>
- <select id="tipoProduto">
-  <option>Teclado Gamer</option>
-  <option>Mouse Gamer</option>
-  <option>Headset Gamer</option>
-  <option>Cadeira Gamer</option>
-  <option>Mesa Gamer</option>
- </select>
- <select id="corProduto">
-  <option>Preto</option>
-  <option>RGB</option>
-  <option>Branco</option>
-  <option>Vermelho</option>
- </select>
- <input type="number" id="precoCustom" placeholder="Preço (R$)">
- <button class="btn-add" onclick="addCustom()">Adicionar Personalizado</button>
 </div>
 
 <script>
-/* 🌗 TEMA */
-const toggle = document.getElementById("themeToggle");
+const toggle=document.getElementById("themeToggle");
 if(localStorage.getItem("theme")==="light"){
  document.body.classList.add("light");
  toggle.textContent="🌞 Claro";
@@ -335,7 +261,6 @@ toggle.onclick=()=>{
  localStorage.setItem("theme",l?"light":"dark");
 };
 
-/* PRODUTOS */
 const produtos=[
  {nome:"Teclado Mecânico", preco:350, vip:false, img:"https://a-static.mlcdn.com.br/800x560/teclado-gamer-backlight-led-rgb-usb-teclas-multimidia-abnt2-semi-mecanico-shaolong/paizaostore/p22010/f94a5d04a47916380ba9f222159d7071.jpeg"},
  {nome:"Mouse Gamer", preco:200, vip:false, img:"https://i5.walmartimages.com/asr/fe47a4ab-5ecc-414f-ae49-6c7a2669e11b_1.42489ef0e331c97f5252d7fc211303a1.jpeg"},
@@ -350,14 +275,6 @@ const produtos=[
  {nome:"Monitor", preco:360, vip:true, img:"https://i5.walmartimages.com/seo/Sceptre-Curved-24-5-inch-Gaming-Monitor-240Hz-1080p-R1500-1ms-DisplayPort-x2-HDMI-Blue-Light-Shift-Build-in-Speakers-Machine-Black-2023-C255B-FWT240_f6bc06c0-9c20-42c5-a14d-a796543c62b7.3aff9af41bdbea02d05ed09f118f7974.png"},
  {nome:"Caixa de Som", preco:450, vip:true, img:"https://images.tcdn.com.br/img/img_prod/487288/caixa_de_som_gamer_redragon_waltz_rgb_stereo_2_0_3_5mm_2x5w_preto_gs510_10615_2_964dc77ece6128d5f41e235c45eb7336.jpg"},
 {nome:"Impressora", preco:850, vip:true, img:"https://http2.mlstatic.com/D_NQ_NP_627750-MLA48319013404_112021-F.jpg"},
-
-
-
-
-
-
-
-
 ];
 
 function renderProdutos(){
@@ -370,67 +287,47 @@ function renderProdutos(){
     <img src="${p.img}">
     <h3>${p.nome}</h3>
     <p class="preco">R$ ${p.preco.toFixed(2)}</p>
-    <button class="btn-add" onclick="add('${p.nome}|${p.preco}|${p.vip}')">Adicionar</button>
+    <button class="btn-add" onclick="add('${p.nome}|${p.preco}')">Adicionar</button>
    </div>`;
  });
 }
 
 function getSaldo(){return parseFloat(localStorage.getItem("saldo"))||0;}
+
 function atualizarSaldo(){
  document.getElementById("saldoValor").innerText="R$ "+getSaldo().toFixed(2);
- const vip = localStorage.getItem("vip")==="true";
- document.getElementById("vipStatus").innerText = vip?"VIP: ✔":"VIP: ❌";
-
- // animação VIP
- document.querySelectorAll(".btn-vip").forEach(btn=>{
-   btn.classList.toggle("glow", !vip);
- });
-
- // animação aviso VIP
- const aviso = document.getElementById("avisoVIP");
- if(vip){
-   aviso.innerText="🎉 VIP Ativo!";
-   aviso.classList.add("show");
- }else{
-   aviso.innerText="VIP Inativo";
-   aviso.classList.remove("show");
- }
+ const vip=localStorage.getItem("vip")==="true";
+ document.getElementById("vipStatus").innerText=vip?"VIP: ✔":"VIP: ❌";
+ document.querySelectorAll(".btn-vip").forEach(b=>b.classList.toggle("glow",!vip));
+ const aviso=document.getElementById("avisoVIP");
+ aviso.innerText=vip?"🎉 VIP ATIVO":"VIP Inativo";
+ aviso.classList.toggle("show",vip);
 }
 
 function addSaldo(){
  const v=parseFloat(prompt("Valor?"));
  if(v>0){localStorage.setItem("saldo",getSaldo()+v);atualizarSaldo();}
 }
-
-// ZERA SALDO de uma vez
-function removerSaldo(){
- localStorage.setItem("saldo", 0);
- atualizarSaldo();
-}
+function removerSaldo(){localStorage.setItem("saldo",0);atualizarSaldo();}
 
 function ativarVIP(){
  if(getSaldo()<50)return alert("Saldo insuficiente");
  localStorage.setItem("vip","true");
  localStorage.setItem("saldo",getSaldo()-50);
  atualizarSaldo();
- alert("VIP ativado com sucesso!");
 }
-
-function cancelarVIP(){
- localStorage.setItem("vip","false");
- atualizarSaldo();
-}
+function cancelarVIP(){localStorage.setItem("vip","false");atualizarSaldo();}
 
 function atualizarLista(){
  const lista=document.getElementById("lista");
  const total=document.getElementById("total");
  let carrinho=JSON.parse(localStorage.getItem("carrinho"))||[];
- lista.innerHTML="";
  let soma=0;
+ lista.innerHTML="";
  carrinho.forEach((i,idx)=>{
   const [n,p]=i.split("|");
   soma+=+p;
-  lista.innerHTML+=`<li>${n} <button onclick="removerItem(${idx})">✖</button></li>`;
+  lista.innerHTML+=`<li>${n}<button onclick="removerItem(${idx})">✖</button></li>`;
  });
  total.innerText="Total: R$ "+soma.toFixed(2);
 }
@@ -441,30 +338,14 @@ function add(d){
  localStorage.setItem("carrinho",JSON.stringify(c));
  atualizarLista();
 }
-
 function removerItem(i){
  let c=JSON.parse(localStorage.getItem("carrinho"))||[];
  c.splice(i,1);
  localStorage.setItem("carrinho",JSON.stringify(c));
  atualizarLista();
 }
-
-function limparCarrinho(){
- localStorage.removeItem("carrinho");
- atualizarLista();
-}
-
-function comprar(){
- alert("Compra concluída!");
- limparCarrinho();
-}
-
-function addCustom(){
- const t=document.getElementById("tipoProduto").value;
- const c=document.getElementById("corProduto").value;
- const p=parseFloat(document.getElementById("precoCustom").value);
- if(p>0)add(`${t} (${c})|${p}|false`);
-}
+function limparCarrinho(){localStorage.removeItem("carrinho");atualizarLista();}
+function comprar(){alert("Compra concluída!");limparCarrinho();}
 
 window.onload=()=>{
  renderProdutos();
